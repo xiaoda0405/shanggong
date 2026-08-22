@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🖤小妲的秘密游戏🖤</title>
+    <style>
+        body { 
+            font-family: system-ui, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            margin: 0; 
+            min-height: 100vh; 
+            background: linear-gradient(rgba(30,10,50,0.78), rgba(20,5,40,0.88)), url('https://i.postimg.cc/43TgmQxH/IMG-20260725-190346.jpg') center/cover fixed; 
+            color: #f0e0ff; 
+        }
+        .container { 
+            max-width: 420px; 
+            margin: 20px auto; 
+            background: rgba(25,15,45,0.96); 
+            padding: 30px 20px; 
+            border-radius: 24px; 
+            box-shadow: 0 0 45px rgba(160,80,255,0.45); 
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(196,161,255,0.28);
+        }
+        h1 { 
+            color: #e0b0ff; 
+            text-shadow: 0 0 22px rgba(192,100,255,0.85); 
+            margin: 10px 0 18px; 
+            font-size: 24px;
+        }
+        h2 {
+            color: #e0b0ff;
+            text-shadow: 0 0 12px rgba(192,100,255,0.6);
+        }
+        button, .option { 
+            padding: 15px 22px; 
+            margin: 9px; 
+            font-size: 16px; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            width: 85%; 
+            font-weight: 600; 
+        }
+        .option { 
+            background: rgba(120,60,220,0.28); 
+            border: 2px solid #c4a1ff; 
+            color: #f0e0ff; 
+        }
+        .option:active {
+            background: rgba(160,80,255,0.45);
+        }
+        .fap { 
+            background: linear-gradient(#7c3aed,#6d28d9); 
+            color: white; 
+        }
+        .kowtow { 
+            background: linear-gradient(#9333ea,#7e22ce); 
+            color: white; 
+        }
+        .cum { 
+            background: linear-gradient(#db2777,#be185d); 
+            color: white; 
+            font-weight: bold; 
+        }
+        .start-btn, .finish-btn { 
+            background: #a855f7; 
+            color: white; 
+        }
+        .amount { 
+            font-size: 52px; 
+            font-weight: bold; 
+            color: #f0bbff; 
+            margin: 10px 0 22px; 
+            text-shadow: 0 0 15px rgba(240,180,255,0.55);
+        }
+        .qr { 
+            max-width: 240px; 
+            margin: 12px auto; 
+            display: block; 
+            border-radius: 12px; 
+            border: 2px solid #c4a1ff; 
+        }
+        .mystery-img { 
+            width: 100%; 
+            max-height: 260px; 
+            object-fit: contain; 
+            border-radius: 16px; 
+            margin: 15px 0; 
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+            border: 2px solid rgba(196,161,255,0.35);
+        }
+        .q-img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 14px;
+            margin: 12px 0 18px;
+            border: 2px solid rgba(196,161,255,0.4);
+        }
+        .countdown-img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 16px;
+            margin: 15px 0 10px;
+            border: 3px solid #f472b6;
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.6);
+            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .progress-container { 
+            width: 100%; 
+            height: 20px; 
+            background: #333; 
+            border-radius: 10px; 
+            overflow: hidden; 
+            margin: 20px 0; 
+        }
+        .progress-bar { 
+            height: 100%; 
+            width: 0%; 
+            background: linear-gradient(to right, #c026d3, #ec4899); 
+            transition: width 0.1s linear; 
+        }
+        .countdown { 
+            font-size: 120px; 
+            font-weight: bold; 
+            color: #f472b6; 
+            margin: 20px 0; 
+            text-shadow: 0 0 30px #ec4899; 
+            transition: transform 0.25s ease, text-shadow 0.25s ease, color 0.25s ease;
+        }
+        .countdown.pulse {
+            transform: scale(1.18);
+            color: #fda4af;
+            text-shadow: 0 0 45px #f43f5e, 0 0 80px #ec4899;
+        }
+        .die-btn {
+            background: linear-gradient(#b91c1c, #991b1b);
+            color: white;
+            font-weight: bold;
+            border: 2px solid #f87171;
+        }
+
+        /* 飘字反馈 */
+        .float-text {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 22px;
+            font-weight: bold;
+            pointer-events: none;
+            animation: floatUp 1.2s ease-out forwards;
+            z-index: 100;
+            text-shadow: 0 0 10px currentColor;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; bottom: 180px; }
+            100% { opacity: 0; bottom: 320px; }
+        }
+
+        /* 弹幕 */
+        .danmaku-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 50;
+        }
+        .danmaku {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 15px;
+            font-weight: 600;
+            color: #f0e0ff;
+            text-shadow: 0 0 8px rgba(192,100,255,0.8);
+            opacity: 0.92;
+            animation: danmakuMove linear forwards;
+        }
+        @keyframes danmakuMove {
+            0% { transform: translateX(100vw); opacity: 0.95; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(-120%); opacity: 0.7; }
+        }
+
+        .decor {
+            color: #c4a1ff;
+            font-size: 18px;
+            margin: 6px 0;
+            opacity: 0.85;
+        }
+        .small-tip {
+            font-size: 14px;
+            color: #d8b4fe;
+            margin: 8px 0 16px;
+            opacity: 0.9;
+        }
+        .q-text {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 12px 0 20px;
+            color: #f0e0ff;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 8px 0 16px;
+            font-size: 14px;
+            color: #d8b4fe;
+        }
+        .stats-row span {
+            background: rgba(120,60,220,0.22);
+            border: 1px solid rgba(196,161,255,0.35);
+            border-radius: 20px;
+            padding: 6px 12px;
+        }
+        .final-stats {
+            text-align: left;
+            background: rgba(40,20,60,0.7);
+            border: 1px solid rgba(196,161,255,0.35);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin: 18px 0;
+            line-heiight: 1.9;
+            font-size: 16px;
+            color: #f0e0ff;
+        }
+        .final-stats strong {
+            color: #f0bbff;
+        }
+        .countdown-hint {
+            font-size: 18px;
+            color: #fda4af;
+            margin: 8px 0 4px;
+            text-shadow: 0 0 12px rgba(244,63,94,0.7);
+            animation: hintPulse 1.2s ease-in-out infinite;
+        }
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.75; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        .countdown-screen-active .countdown-img {
+            animation: imgGlow 1.1s ease-in-out infinite;
+        }
+        @keyframes imgGlow {
+            0%, 100% { box-shadow: 0 0 25px rgba(236, 72, 153, 0.55); transform: scale(1); }
+            50% { box-shadow: 0 0 48px rgba(244, 63, 94, 0.9); transform: scale(1.03); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="danmaku-area" class="danmaku-area" style="display:none;"></div>
+
+        <!-- 免责声明 -->
+        <div id="disclaimer-screen">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h1>小妲的上贡射精游戏</h1>
+            <div class="decor">🖤 🖤 🖤</div>
+            <p><strong>免责声明</strong></p>
+            <p>本游戏仅供娱乐，内容为虚构幻想。可能会对人的身心健康和财产安全造成影响。继续游玩代表同意。</p>
+            <button onclick="showQ1()" class="start-btn">我已阅读并同意</button>
+        </div>
+<!-- 问题1 -->
+        <div id="q1-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h1>你已经发情了，对叭～</h1>
+            <img src="https://i.postimg.cc/43TgmQxH/IMG-20260725-190346.jpg" class="q-img" alt="脚底">
+            <p class="q-text">就这样一直刷推特，想看见能让你保持兴奋的地方。<br>是不是已经有点硬了？</p>
+            <button class="option" onclick="showQ2()">是的！</button>
+            <button class="option" onclick="showQ2()">没有，我只是随便看看</button>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+
+        <!-- 问题2 -->
+        <div id="q2-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h1>一段真实画面</h1>
+            <img src="https://i.postimg.cc/gknd507x/IMG-20260725-190409.jpg" class="q-img" alt="脚底">
+            <p class="q-text">现在，你独自一个人呆着。<br>别人都在好好休息或者忙着自己的事，你却偷偷刷着祖宗的页面。<br>盯着那双脚，脑子已经开始空白。</p>
+            <button class="option" onclick="showQ3()">我正在这样🥵</button>
+            <button class="option" onclick="showQ3()">我能想象到那样的画面😭</button>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+
+        <!-- 问题3 -->
+        <div id="q3-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h1>承认吧～</h1>
+            <img src="https://i.postimg.cc/yxNB76Yt/IMG-20260725-190431.jpg" class="q-img" alt="脚底">
+            <p class="q-text">你这种人，生下来就是被黑心祖宗榨干的命。<br>钱包会被清空，脑子会越来越空，却越来越爽。</p>
+            <button class="option" onclick="showQ4()">我承认，我就是这种废物😭</button>
+            <button class="option" onclick="showQ4()">我……可能是🥺</button>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+
+        <!-- 问题4 -->
+        <div id="q4-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h1>现在就开始</h1>
+            <img src="https://i.postimg.cc/GpkbQS5P/IMG-20260725-180915.jpg" class="q-img" alt="脚底">
+            <p class="q-text">想被彻底清空吗？<br>想一边盯着祖宗脚底，一边把自己越陷越深吗？</p>
+            <button class="option" onclick="showRulesFinal()">我想要被榨！</button>
+            <button class="option" onclick="showRulesFinal()">我已经准备好了！</button>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+
+        <!-- 规则页 -->
+        <div id="rules-final-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h1>游戏规则</h1>
+            <img src="https://i.postimg.cc/Nj2sy07B/IMG-20260725-180328.jpg" class="q-img" alt="脚底">
+            <p class="q-text" style="text-align:left; padding: 0 10px;">
+                1. 盯着脚底板，边🦌边点～🖤<br>
+                2. 支付时间只有60秒～🖤<br>
+                3. 点击按钮增加贡金～🖤<br>
+                4. 寸止只有15秒休息～🖤<br>
+                5. 擅自射精是绝对不允许的～🖤
+            </p>
+            <p class="small-tip">从现在开始，你已经没有退路了。<br>你的下场只能是被榨干～</p>
+            <button onclick="goToStart()" class="start-btn">进入游戏</button>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+
+        <!-- 选择初始金额 -->
+        <div id="start-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h1>选择初始贡金</h1>
+            <div class="decor">🖤 🖤 🖤</div>
+            <button class="option" onclick="start(0)">0 元</button>
+            <button class="option" onclick="start(18)">18 元</button>
+            <button class="option" onclick="start(38)">38 元</button>
+            <button class="option" onclick="start(48)">48 元</button>
+            <button class="option" onclick="start(58)">58 元</button>
+        </div>
+
+        <!-- 游戏主界面 -->
+        <div id="game-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <img src="https://i.postimg.cc/43TgmQxH/IMG-20260725-190346.jpg" class="mystery-img" id="mystery-img" alt="小妲">
+            <p>当前贡金</p>
+            <div class="amount" id="amount">0</div>
+            <div class="stats-row">
+                <span>🦌 <b id="fap-count">0</b></span>
+                <span>磕头 <b id="kowtow-count">0</b></span>
+                <span>死妈 <b id="die-count">0</b></span>
+            </div>
+            <button class="fap" onclick="fap()">🦌 一下 (+0.01)</button>
+            <button class="kowtow" onclick="kowtow()">磕头 (+0.05)</button>
+            <button class="die-btn" onclick="dieMom()">死妈 (+0.1)</button>
+            <button class="cum" onclick="wantCum()">想💦</button>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+
+        <div id="choice-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h2>现在要？</h2>
+            <div class="decor">🖤 🖤 🖤</div>
+            <button onclick="choosePay()" class="cum">支付射精</button>
+            <button onclick="chooseEdge()" class="fap">选择寸止</button>
+        </div>
+
+        <div id="progress-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h2 id="progress-title">寸止中...</h2>
+            <p class="small-tip">好好休息一下叭～🖤</p>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <p id="progress-text">15 秒</p>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+
+        <div id="payment-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h2>支付倒计时 (60秒)</h2>
+            <p class="small-tip">要好好上贡呢～🖤</p>
+            <div class="progress-container">
+                <div id="pay-progress-bar" class="progress-bar"></div>
+            </div>
+            <p id="pay-progress-text">60 秒</p>
+            <p style="margin:15px 0;color:#f0bbff;">当前贡金： <span id="pay-amount">0</span> 元</p>
+            
+            <p style="margin:20px 0 10px;color:#c4a1ff;">支付宝</p>
+            <img src="https://i.postimg.cc/SNh3sQBR/IMG-20260721-005325.jpg" class="qr">
+            
+            <p style="margin:20px 0 10px;color:#c4a1ff;">微信支付</p>
+            <img src="https://i.postimg.cc/ht4YLyP8/IMG-20260721-005339.png" class="qr">
+            
+            <button onclick="startBigCountdown()" class="finish-btn" style="margin-top:20px;">我已支付</button>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+
+        <div id="countdown-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h2>射精倒计时</h2>
+            <p class="countdown-hint" id="countdown-hint">盯着脚底板……马上就可以了～🖤</p>
+            <img src="https://i.postimg.cc/43TgmQxH/IMG-20260725-190346.jpg" class="countdown-img" id="countdown-img" alt="小妲">
+            <div class="countdown" id="big-countdown">10</div>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+
+        <!-- 结束统计页 -->
+        <div id="result-screen" style="display:none;">
+            <div class="decor">🖤 🖤 🖤</div>
+            <h1>射精成功 🎉</h1>
+            <div class="final-stats">
+                <div>本次贡金：<strong id="result-amount">0.00</strong> 元</div>
+                <div>🦌 一下：<strong id="result-fap">0</strong> 次</div>
+                <div>磕头：<strong id="result-kowtow">0</strong> 次</div>
+                <div>死妈：<strong id="result-die">0</strong> 次</div>
+                <div>总点击：<strong id="result-total">0</strong> 次</div>
+            </div>
+            <p class="small-tip">数据已记录～🖤</p>
+            <button onclick="location.reload()" class="start-btn">再玩一次</button>
+            <div class="decor">🖤 🖤 🖤</div>
+        </div>
+    </div>
+
+    <audio id="sfx" src="11.mp3" preload="auto"></audio>
+
+    <script>
+        let currentAmount = 0;
+        let timer;
+        let danmakuTimer = null;
+        let audioUnlocked = false;
+
+        // 统计
+        let fapCount = 0;
+        let kowtowCount = 0;
+        let dieMomCount = 0;
+
+        const payDanmakuList = [
+            "快点哦，不然不能射呢～🖤",
+            "不行呢，必须支付完成才可以哦～🖤",
+            "擅自射精什么的是绝对不允许的～🖤",
+            "要好好上贡呢～🖤",
+            "马上就可以咯，坚持一下～🖤"
+        ];
+
+        const edgeDanmakuList = [
+            "坚持住哦，休息一下叭～🖤",
+            "不能射很难受叭～🖤",
+            "时间只有15秒哦～🖤",
+            "希望待会还可以在见到你～🖤",
+            "15秒钟的时间会不会不够呢～🖤"
+        ];
+
+        // 🦌管界面弹幕（10条轮播）
+        const gameDanmakuList = [
+            "傻逼的速度真是越来越快呢～🖤",
+            "白痴，可以放慢一点点呀～🖤",
+            "舌头怎么都吐出来啦～🖤",
+            "啧啧啧，眼白也出来了呢～🖤",
+            "注意注意，点一下“死妈”爽上天哦～🖤",
+            "数额越来越大了呢～🖤",
+            "眼睛已经移不开了嘛～🖤",
+            "注意，小妲的脚底板才是你亲妈哦～🖤",
+            "要射了吗？真是差劲欸～🖤",
+            "再多一点嘛，多给小妲一点～🖤"
+        ];
+
+        const imageList = [
+            "https://i.postimg.cc/43TgmQxH/IMG-20260725-190346.jpg",
+            "https://i.postimg.cc/gknd507x/IMG-20260725-190409.jpg",
+            "https://i.postimg.cc/yxNB76Yt/IMG-20260725-190431.jpg",
+            "https://i.postimg.cc/GpkbQS5P/IMG-20260725-180915.jpg",
+            "https://i.postimg.cc/Nj2sy07B/IMG-20260725-180328.jpg"
+        ];
+
+        const countdownHints = [
+            "盯着脚底板……马上就可以了～🖤",
+            "呼吸乱了吧？继续看～🖤",
+            "越来越近了……不准提前射～🖤",
+            "小妲正在看着你呢～🖤",
+            "最后几秒了，好好感受～🖤",
+            "准备好被清空了吗～🖤"
+        ];
+
+        let currentImageIndex = 0;
+        let imageTimer = null;
+        let countdownImageIndex = 0;
+        let countdownImageTimer = null;
+
+        function startImageSlideshow() {
+            const img = document.getElementById('mystery-img');
+            if (!img) return;
+            if (imageTimer) clearInterval(imageTimer);
+            imageTimer = setInterval(() => {
+                currentImageIndex = (currentImageIndex + 1) % imageList.length;
+                img.style.opacity = 0;
+                setTimeout(() => {
+                    img.src = imageList[currentImageIndex];
+                    img.style.opacity = 1;
+                }, 300);
+            }, 5000);
+        }
+
+        function stopImageSlideshow() {
+            if (imageTimer) {
+                clearInterval(imageTimer);
+                imageTimer = null;
+            }
+        }
+
+        function startCountdownSlideshow() {
+            const img = document.getElementById('countdown-img');
+            if (!img) return;
+            if (countdownImageTimer) clearInterval(countdownImageTimer);
+            countdownImageIndex = 0;
+            img.src = imageList[0];
+            img.style.opacity = 1;
+            countdownImageTimer = setInterval(() => {
+                countdownImageIndex = (countdownImageIndex + 1) % imageList.length;
+                img.style.opacity = 0;
+                setTimeout(() => {
+                    img.src = imageList[countdownImageIndex];
+                    img.style.opacity = 1;
+                }, 200);
+            }, 1800);
+        }
+
+        function stopCountdownSlideshow() {
+            if (countdownImageTimer) {
+                clearInterval(countdownImageTimer);
+                countdownImageTimer = null;
+            }
+        }
+
+        function showFloatText(text, color) {
+            const container = document.querySelector('.container');
+            const float = document.createElement('div');
+            float.className = 'float-text';
+            float.textContent = text;
+            float.style.color = color || '#f0bbff';
+            container.appendChild(float);
+            setTimeout(() => float.remove(), 1200);
+        }
+
+        // 解锁 + 播放音效（解决浏览器限制）
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            const audio = document.getElementById('sfx');
+            if (audio) {
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audioUnlocked = true;
+                }).catch(() => {});
+            }
+        }
+
+        function playSfx() {
+            const audio = document.getElementById('sfx');
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
+        }
+
+        // 弹幕
+        function clearDanmaku() {
+            if (danmakuTimer) {
+                clearInterval(danmakuTimer);
+                danmakuTimer = null;
+            }
+            const area = document.getElementById('danmaku-area');
+            area.innerHTML = '';
+            area.style.display = 'none';
+        }
+
+        function startDanmaku(list, isPayment = false) {
+            clearDanmaku();
+            const area = document.getElementById('danmaku-area');
+            area.style.display = 'block';
+            let index = 0;
+
+            function spawnOne() {
+                const text = list[index % list.length];
+                index++;
+                const d = document.createElement('div');
+                d.className = 'danmaku';
+                d.textContent = text;
+                let topPos;
+                if (isPayment) {
+                    topPos = Math.random() < 0.5 ? (8 + Math.random() * 14) : (78 + Math.random() * 12);
+                } else {
+                    topPos = 12 + Math.random() * 70;
+                }
+                d.style.top = topPos + '%';
+                d.style.animationDuration = (9 + Math.random() * 5) + 's';
+                area.appendChild(d);
+                setTimeout(() => { if (d.parentNode) d.remove(); }, 15000);
+            }
+            spawnOne();
+            danmakuTimer = setInterval(spawnOne, 2200);
+        }
+
+        function updateStatsDisplay() {
+            document.getElementById('fap-count').textContent = fapCount;
+            document.getElementById('kowtow-count').textContent = kowtowCount;
+            document.getElementById('die-count').textContent = dieMomCount;
+        }
+
+        // ========== 问题流程 ==========
+        function showQ1() {
+            unlockAudio();
+            document.getElementById('disclaimer-screen').style.display = 'none';
+            document.getElementById('q1-screen').style.display = 'block';
+        }
+        function showQ2() {
+            unlockAudio();
+            document.getElementById('q1-screen').style.display = 'none';
+            document.getElementById('q2-screen').style.display = 'block';
+        }
+        function showQ3() {
+            document.getElementById('q2-screen').style.display = 'none';
+            document.getElementById('q3-screen').style.display = 'block';
+        }
+        function showQ4() {
+            document.getElementById('q3-screen').style.display = 'none';
+            document.getElementById('q4-screen').style.display = 'block';
+        }
+        function showRulesFinal() {
+            document.getElementById('q4-screen').style.display = 'none';
+            document.getElementById('rules-final-screen').style.display = 'block';
+        }
+        function goToStart() {
+            document.getElementById('rules-final-screen').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'block';
+        }
+
+        function start(initial) { 
+            currentAmount = initial; 
+            fapCount = 0;
+            kowtowCount = 0;
+            dieMomCount = 0;
+            document.getElementById('start-screen').style.display = 'none'; 
+            document.getElementById('game-screen').style.display = 'block'; 
+            updateAmount();
+            updateStatsDisplay();
+            startImageSlideshow();
+            startDanmaku(gameDanmakuList, false);
+        }
+
+        function updateAmount() { 
+            document.getElementById('amount').textContent = currentAmount.toFixed(2); 
+        }
+
+        function fap() { 
+            currentAmount += 0.01; 
+            fapCount++;
+            updateAmount();
+            updateStatsDisplay();
+            showFloatText('傻逼', '#c4a1ff');
+            playSfx();
+        }
+
+        function kowtow() {
+            currentAmount += 0.05;
+            kowtowCount++;
+            updateAmount();
+            updateStatsDisplay();
+            showFloatText('白痴', '#e879f9');
+            playSfx();
+        }
+
+        function dieMom() {
+            currentAmount += 0.1;
+            dieMomCount++;
+            updateAmount();
+            updateStatsDisplay();
+            showFloatText('死妈快乐', '#f87171');
+            playSfx();
+        }
+
+        function wantCum() { 
+            document.getElementById('game-screen').style.display = 'none'; 
+            document.getElementById('choice-screen').style.display = 'block'; 
+            clearDanmaku();
+            stopImageSlideshow();
+        }
+
+        function choosePay() {
+            document.getElementById('choice-screen').style.display = 'none';
+            document.getElementById('payment-screen').style.display = 'block';
+            document.getElementById('pay-amount').textContent = currentAmount.toFixed(2);
+            startPayProgress();
+            startDanmaku(payDanmakuList, true);
+        }
+
+        function chooseEdge() { 
+            document.getElementById('choice-screen').style.display = 'none'; 
+            document.getElementById('progress-screen').style.display = 'block'; 
+            document.getElementById('progress-title').textContent = "寸止中 (15秒)"; 
+            startEdgeProgress();
+            startDanmaku(edgeDanmakuList, false);
+        }
+
+        function startEdgeProgress() {
+            let timeLeft = 15;
+            const bar = document.getElementById('progress-bar');
+            const text = document.getElementById('progress-text');
+            bar.style.width = '0%';
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft -= 0.1;
+                const percent = ((15 - timeLeft) / 15) * 100;
+                bar.style.width = percent + "%";
+                text.textContent = timeLeft.toFixed(1) + " 秒";
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    clearDanmaku();
+                    alert("继续叭傻逼🖕🏻");
+                    document.getElementById('progress-screen').style.display = 'none';
+                    document.getElementById('game-screen').style.display = 'block';
+                    startImageSlideshow();
+                    startDanmaku(gameDanmakuList, false);
+                }
+            }, 100);
+        }
+
+        function startPayProgress() {
+            let timeLeft = 60;
+            const bar = document.getElementById('pay-progress-bar');
+            const text = document.getElementById('pay-progress-text');
+            bar.style.width = '0%';
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft -= 0.1;
+                const percent = ((60 - timeLeft) / 60) * 100;
+                bar.style.width = percent + "%";
+                text.textContent = timeLeft.toFixed(1) + " 秒";
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    clearDanmaku();
+                    alert("时间到！没支付就想射？垃圾🖕🏻");
+                    document.getElementById('payment-screen').style.display = 'none';
+                    document.getElementById('game-screen').style.display = 'block';
+                    startImageSlideshow();
+                    startDanmaku(gameDanmakuList, false);
+                }
+            }, 100);
+        }
+
+        function startBigCountdown() {
+            clearDanmaku();
+            clearInterval(timer);
+            document.getElementById('payment-screen').style.display = 'none';
+            const countdownScreen = document.getElementById('countdown-screen');
+            countdownScreen.style.display = 'block';
+            countdownScreen.classList.add('countdown-screen-active');
+            stopImageSlideshow();
+            startCountdownSlideshow();
+            
+            let count = 10;
+            const el = document.getElementById('big-countdown');
+            const hintEl = document.getElementById('countdown-hint');
+            el.textContent = count;
+            el.classList.remove('pulse');
+            hintEl.textContent = countdownHints[0];
+
+            timer = setInterval(() => {
+                count--;
+                el.textContent = count;
+                // 脉冲放大效果
+                el.classList.remove('pulse');
+                void el.offsetWidth; // 强制重绘
+                el.classList.add('pulse');
+
+                // 切换提示语
+                if (count >= 1) {
+                    const hintIndex = Math.min(countdownHints.length - 1, 10 - count);
+                    hintEl.textContent = countdownHints[hintIndex];
+                }
+
+                // 最后几秒加强颜色
+                if (count <= 3) {
+                    el.style.color = '#fb7185';
+                    el.style.textShadow = '0 0 50px #f43f5e, 0 0 90px #e11d48';
+                }
+
+                if (count <= 0) {
+                    clearInterval(timer);
+                    stopCountdownSlideshow();
+                    countdownScreen.classList.remove('countdown-screen-active');
+                    document.getElementById('countdown-screen').style.display = 'none';
+
+                    // 显示统计页（删除原来的评价提示）
+                    document.getElementById('result-amount').textContent = currentAmount.toFixed(2);
+                    document.getElementById('result-fap').textContent = fapCount;
+                    document.getElementById('result-kowtow').textContent = kowtowCount;
+                    document.getElementById('result-die').textContent = dieMomCount;
+                    document.getElementById('result-total').textContent = fapCount + kowtowCount + dieMomCount;
+                    document.getElementById('result-screen').style.display = 'block';
+                }
+            }, 900);
+        }
+
+        window.onload = function() {
+            document.getElementById('mystery-img').addEventListener('click', kowtow);
+        };
+    </script>
+</body>
+</html>
